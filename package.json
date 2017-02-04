@@ -1,0 +1,22 @@
+{
+  "name": "spyfallbot",
+  "version": "1.0.0",
+  "description": "Unofficial SpyFall BOT by SketchyRandom",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomas-crane/spyfalldiscord.git"
+  },
+  "author": "Samuel Cavicchi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thomas-crane/spyfalldiscord/issues"
+  },
+  "homepage": "https://github.com/thomas-crane/spyfalldiscord#readme",
+  "dependencies": {
+    "discordie": "^0.11.0"
+  }
+}

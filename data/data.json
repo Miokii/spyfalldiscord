@@ -1,0 +1,11 @@
+{
+    "messages": {
+        "welcome": ""
+    },
+    "channels": {
+        "text": {
+            "gameroom1": ""
+        },
+        "voice": {}
+    }
+}
