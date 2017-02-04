@@ -6,22 +6,23 @@ var dat = require("./data/data.json")
 var guildManager = require("./guildManager")
 var commands = require("./commands");
 
+var gamesInProgress = [];
+
 client.connect({
-  token: config.token
+    token: config.token
 });
 
 client.Dispatcher.on("GATEWAY_READY", e => {
-  console.log("Connected as: " + client.User.username);
-  guildManager.findChannels(client.Guilds.find(g => g.name == "Spyfall Game"));
-  commands.giveClient(client);
+    console.log("Connected as: " + client.User.username);
+    guildManager.findChannels(client.Guilds.find(g => g.name == "Spyfall Game"));
+    commands.giveClient(client);
 });
 
 client.Dispatcher.on("MESSAGE_CREATE", e => {
-  commands.parseMessage(e);
+    commands.parseMessage(e);
 });
 
 client.Dispatcher.on("GUILD_MEMBER_ADD", e => {
-  var channel = e.guild.textChannels.find(c => c.name == "welcome");
-  channel.sendMessage(e.member.mention + ", Welcome to the Spyfall Discord server! If you happen to be new to the game head over to");
+    var channel = e.guild.textChannels.find(c => c.name == "welcome");
+    channel.sendMessage(e.member.mention + ", Welcome to the Spyfall Discord server! If you happen to be new to the game head over to");
 });
-

@@ -20,7 +20,12 @@ function findChannels(guild){
 function listChannels() {
     return txtChnlGR1.name;
 }
+
+function getGameRooms() {
+    return [txtChnlGR1, txtChnlGR2];
+}
 module.exports = {
     findChannels : findChannels,
-    listChannels : listChannels
+    listChannels : listChannels,
+    getGameRooms: getGameRooms
 }

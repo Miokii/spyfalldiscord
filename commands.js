@@ -2,6 +2,7 @@ var guildManager = require("./guildManager");
 var main = require("./main");
 var moment = require('moment');
 var client;
+var Game = require('./game');
 
 function giveClient(c) {
     client = c;
@@ -75,7 +76,14 @@ function parseMessage(ctx) {
             chnl.sendMessage(messageToSend);
         }
     }
+    if (/^new game\b/i.test(msg)) {
+        var gameRooms = guildManager.getGameRooms();
+        var gameChannels = Game.freeChannels();
+        if(gameChannels.length > 0) {
+            var newGame = new Game(ctx.message.author, gameChannels[0]);
+        }
 
+    }
 }
 
 module.exports = {
