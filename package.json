@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/thomas-crane/spyfalldiscord#readme",
   "dependencies": {
-    "discordie": "^0.11.0"
+    "discordie": "^0.11.0",
+    "moment": "^2.17.1"
   }
 }

@@ -1,62 +1,84 @@
 var guildManager = require("./guildManager");
 var main = require("./main");
-var msgs;
+var moment = require('moment');
+var client;
 
-function giveClient(c){
-    msgs = c;
+function giveClient(c) {
+    client = c;
 }
 
-function parseMessage(ctx){
-    msg = ctx.message.content;
-    chnl = ctx.message.channel;
+function parseMessage(ctx) {
+    var msg = ctx.message.content;
+    var chnl = ctx.message.channel;
 
     console.log("Received message: " + msg);
-    if(/\bWhat\b/ig.test(msg)){
-        if(/\bchannel\b/ig.test(msg)){
-            if(/\bis this\b/ig.test(msg)){
-                chnl.sendMessage("This channel is: " +chnl.name);
+    if (/\bWhat\b/ig.test(msg)) {
+        if (/\bchannel\b/ig.test(msg)) {
+            if (/\bis this\b/ig.test(msg)) {
+                chnl.sendMessage("This channel is: " + chnl.name);
             }
-            if(/\bid is this\b/ig.test(msg)){
+            if (/\bid is this\b/ig.test(msg)) {
                 chnl.sendMessage("This channel's id is: " + chnl.id);
             }
         }
     }
 
-    if(/\blist\b/ig.test(msg)){
-        if(/\bchannel\b|\bchannels\b/ig.test(msg)){
+    if (/\blist\b/ig.test(msg)) {
+        if (/\bchannel\b|\bchannels\b/ig.test(msg)) {
             chnl.sendMessage(guildManager.listChannels());
         }
     }
 
-    if(/\bclear\b|\bcc\b/ig.test(msg)) {
-        if(/\bchat\b|\bcc\b/ig.test(msg)){
-            var result = /\d/g[Symbol.match](msg);
-            var num;
-            var i = 0;
-            if(result != null){
-                while(result[i] != null){
-                    console.log(result[i]);
-                    num += result[i];
-                    i++;
-                }
-                console.log(num);
+    if (/\bclear\b|\bcc\b/ig.test(msg)) {
+        if (/\bchat\b|\bcc\b/ig.test(msg)) {
 
-                var arrayOfMessages = msgs.toArray
-                if(chnl.messages[0].id == null){
-                    chnl.sendMessage("I can't delete that many!");
-                    console.log(chnl.messages);
-                }else{
-                    for(var y = chnl.messages.length; y > (chnl.messages.length - num); y--){
-                        msgs.deleteMessage(chnl.messages[y]);
-                    }
-                }
+            // This should probably be at the start of the
+            // parse function, but there might be come cases
+            // where the bot needs to parse its own message
+            //  - TC
+            if (ctx.message.author.id === client.User.id) {
+                return;
             }
+
+            var result = msg.match(/\d+/);
+            var num = 100;
+            if (result != null) {
+                num = result[0];
+            }
+            var msgs = chnl.fetchMessages(num, null, null).then(function (messages) {
+                var ms = messages.messages.filter(m => !m.deleted);
+                client.Messages.deleteMessages(ms, chnl);
+            }, function (error) {
+                chnl.sendMessage('Sorry, an error occured');
+            });
+        }
+    }
+    if (/^chat log\b/i.test(msg)) {
+        var result = msg.match(/\d+/);
+        var num = 10;
+        if (result != null) {
+            if (result[0] == 1) {
+                chnl.sendMessage('Don\'t be silly');
+                return;
+            }
+            num = result[0];
+            var msgs = client.Messages.forChannel(chnl);
+            var messageToSend = 'Here are the last ' + num + ' messages\n';
+            msgs.forEach(function (m) {
+                if (m.author.id === client.User.id) {
+                    return;
+                }
+                messageToSend += (m.author.nickMention + ' *' + moment(m.timestamp).calendar() + (m.deleted ? ' (deleted)' : '') + '*\n' +
+                    m.content);
+                messageToSend += '\n\n';
+            }, this);
+            chnl.sendMessage(messageToSend);
         }
     }
 
 }
 
 module.exports = {
-    parseMessage : parseMessage,
-    giveClient : giveClient
+    parseMessage: parseMessage,
+    giveClient: giveClient
 }

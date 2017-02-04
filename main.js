@@ -13,7 +13,7 @@ client.connect({
 client.Dispatcher.on("GATEWAY_READY", e => {
   console.log("Connected as: " + client.User.username);
   guildManager.findChannels(client.Guilds.find(g => g.name == "Spyfall Game"));
-  commands.giveClient(client.Messages);
+  commands.giveClient(client);
 });
 
 client.Dispatcher.on("MESSAGE_CREATE", e => {
