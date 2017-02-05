@@ -3,7 +3,7 @@ var config = require('./config/config.json');
 var client = new Discordie();
 
 var dat = require("./data/data.json")
-var guildManager = require("./guildManager")
+var guildManager = require("./guildmanager")
 var commands = require("./commands");
 var dbManager = require('./dbmanager');
 

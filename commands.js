@@ -1,4 +1,4 @@
-var guildManager = require("./guildManager");
+var guildManager = require("./guildmanager");
 var main = require("./main");
 var moment = require('moment');
 var client;

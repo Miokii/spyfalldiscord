@@ -1,7 +1,7 @@
 var moment = require('moment');
 var locs = require('./data/locations.json');
 var gm = require('./gamemanager');
-var guildManager = require('./guildManager');
+var guildManager = require('./guildmanager');
 
 function Game(host, channel) {
     if (gm.isInGame(host)) {
