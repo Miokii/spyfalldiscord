@@ -13,25 +13,25 @@ function parseMessage(ctx) {
     var chnl = ctx.message.channel;
 
     console.log("Received message: " + msg);
-    if (/\bWhat\b/ig.test(msg)) {
+    if (/\bWhat\b/i.test(msg)) {
         if (/\bchannel\b/ig.test(msg)) {
             if (/\bis this\b/ig.test(msg)) {
                 chnl.sendMessage("This channel is: " + chnl.name);
             }
-            if (/\bid is this\b/ig.test(msg)) {
+            if (/\bid is this\b/i.test(msg)) {
                 chnl.sendMessage("This channel's id is: " + chnl.id);
             }
         }
     }
 
-    if (/\blist\b/ig.test(msg)) {
-        if (/\bchannel\b|\bchannels\b/ig.test(msg)) {
+    if (/\blist\b/i.test(msg)) {
+        if (/\bchannel\b|\bchannels\b/i.test(msg)) {
             chnl.sendMessage(guildManager.listChannels());
         }
     }
 
-    if (/\bclear\b|\bcc\b/ig.test(msg)) {
-        if (/\bchat\b|\bcc\b/ig.test(msg)) {
+    if (/^\bclear\b|^\bcc\b/i.test(msg)) {
+        if (/^\bchat\b|^\bcc\b/i.test(msg)) {
 
             // This should probably be at the start of the
             // parse function, but there might be come cases
