@@ -4,11 +4,17 @@ var gm = require('./gamemanager');
 var guildManager = require('./guildManager');
 
 function Game(host, channel) {
+    if (gm.isInGame(host)) {
+        channel.sendMessage(host.nickMention + ' you are already in another game!');
+        return;
+    }
+
     this.channel = channel;
     this.players = [host];
     this.host = host;
     this.spy = null;
     this.location = Game.getRandomLocation();
+    this.inProgress = false;
 
     if (gm.addGame(this)) {
         // success
@@ -17,10 +23,20 @@ function Game(host, channel) {
 }
 
 Game.prototype.addPlayer = function (player) {
-    if (this.players.length >= 7)
+    if(this.inProgress) {
+        this.channel.sendMessage('Sorry ' + player.nickMention + ', the game has already started!');
         return;
+    }
+    if (this.players.length >= 7) {
+        this.channel.sendMessage('Sorry ' + player.nickMention + ', this game is full!');
+        return;
+    }
     if (this.players.find(p => p.id === player.id)) {
         this.channel.sendMessage(player.nickMention + ' you are already in the game');
+        return;
+    }
+    if (gm.isInGame(player)) {
+        this.channel.sendMessage(player.nickMention + ' you are already in another game!');
         return;
     }
     this.channel.sendMessage(player.nickMention + ' joined the game');
@@ -28,6 +44,7 @@ Game.prototype.addPlayer = function (player) {
 };
 
 Game.prototype.startGame = function () {
+    this.inProgress = true;
     this.channel.sendMessage(this.host.nickMention + ' has started the game!\nInformation will be sent via private message.');
     this.spy = this.players[Math.floor(Math.random() * this.players.length)];
 
