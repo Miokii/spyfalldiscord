@@ -28,9 +28,17 @@ function isInGame(player) {
     return inGame;
 }
 
+function removeGame(game) {
+    var i = gamesInProgress.findIndex(g => g.host.id === game.host.id);
+    if (i != -1) {
+        gamesInProgress.splice(i, 1);
+    }
+}
+
 module.exports = {
     addGame: addGame,
     getGames: getGames,
     getGameForChannel: getGameForChannel,
-    isInGame: isInGame
+    isInGame: isInGame,
+    removeGame: removeGame
 }
