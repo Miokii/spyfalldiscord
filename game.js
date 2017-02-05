@@ -13,9 +13,6 @@ function Game(host, channel) {
     if (gm.addGame(this)) {
         // success
         channel.sendMessage('@everyone A new game is starting! Type join to play (max 7 players)');
-    } else {
-        // no room for more games
-        channel.sendMessage('Sorry, there are no more game channels available!');
     }
 }
 
@@ -37,16 +34,14 @@ Game.freeChannels = function () {
     var games = gm.getGames();
     var gameChannels = guildManager.getGameRooms();
     var frees = gameChannels.filter(function (c) {
+        var keep = true;
         games.forEach(function (game) {
-            console.log('Comparing ' + game.channel.name + ' to ' + c.name);
             if (game.channel.id === c.id) {
-                console.log('returning false!');
-                return false;
+                keep = false;
             }
         }, this);
-        return true;
+        return keep;
     });
-    console.log(frees);
     if(frees === null) {
         frees = [];
     }

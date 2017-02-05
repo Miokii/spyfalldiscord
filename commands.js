@@ -77,12 +77,13 @@ function parseMessage(ctx) {
         }
     }
     if (/^new game\b/i.test(msg)) {
-        var gameRooms = guildManager.getGameRooms();
         var gameChannels = Game.freeChannels();
         if(gameChannels.length > 0) {
             var newGame = new Game(ctx.message.author, gameChannels[0]);
+        } else {
+            // no more channels
+            chnl.sendMessage('Sorry, there are no more game channels available!');
         }
-
     }
 }
 
