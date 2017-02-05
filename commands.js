@@ -3,6 +3,7 @@ var main = require("./main");
 var moment = require('moment');
 var client;
 var Game = require('./game');
+var gm = require('./gamemanager');
 
 function giveClient(c) {
     client = c;
@@ -77,12 +78,29 @@ function parseMessage(ctx) {
         }
     }
     if (/^new game\b/i.test(msg)) {
-        var gameRooms = guildManager.getGameRooms();
         var gameChannels = Game.freeChannels();
         if(gameChannels.length > 0) {
             var newGame = new Game(ctx.message.author, gameChannels[0]);
+        } else {
+            // no more channels
+            chnl.sendMessage('Sorry, there are no more game channels available!');
         }
-
+    }
+    if(/^join$/i.test(msg)) {
+        var game = gm.getGameForChannel(chnl);
+        if(game) {
+            game.addPlayer(ctx.message.author);
+        }
+    }
+    if(/^start game\b/i.test(msg)) {
+        var game = gm.getGameForChannel(chnl);
+        if(game) {
+            if(game.host.id === ctx.message.author.id) {
+                game.startGame();
+                return;
+            }
+            chnl.sendMessage('Only ' + game.host.nickMention + ' may start the game');
+        }
     }
 }
 
