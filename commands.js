@@ -102,6 +102,17 @@ function parseMessage(ctx) {
             chnl.sendMessage('Only ' + game.host.nickMention + ' may start the game');
         }
     }
+    if(/^end game\b/i.test(msg)) {
+        var game = gm.getGameForChannel(chnl);
+        if(game) {
+            if(game.host.id === ctx.message.author.id) {
+                gm.removeGame(game);
+                chnl.sendMessage('The game was ended by ' + game.host.nickMention + '!');
+                return;
+            }
+            chnl.sendMessage('Only the host can end the game manually');
+        }
+    }
 }
 
 module.exports = {
