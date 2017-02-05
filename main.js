@@ -5,8 +5,11 @@ var client = new Discordie();
 var dat = require("./data/data.json")
 var guildManager = require("./guildManager")
 var commands = require("./commands");
+var dbManager = require('./dbmanager');
 
 var gamesInProgress = [];
+
+dbManager.initDB();
 
 client.connect({
     token: config.token
