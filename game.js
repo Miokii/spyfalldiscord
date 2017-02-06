@@ -51,7 +51,12 @@ Game.prototype.startGame = function () {
     for (var i = 0; i < this.players.length; i++) {
         if (this.players[i].id === this.spy.id) {
             this.players[i].openDM().then(function (dm) {
-                dm.sendMessage('You are the spy!')
+                dm.sendMessage('You are the spy!');
+                var locRef = "Location Reference:";
+                for(var x = 0; x < locs.length; x++){
+                    locRef += '\n' + locs[x];
+                }
+                dm.sendMessage(locRef);
             }, function (error) {
                 // some error occurred.
                 console.log('An error occured');

@@ -42,7 +42,7 @@ function roomForOneMore(){
 }
 
 function getNextGameNumber(){
-    if(gamesInProgress <= 0){
+    if(gamesInProgress.length <= 0){
         return 0;
     }else{
         return gamesInProgress.length +1;
