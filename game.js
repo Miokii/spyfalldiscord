@@ -2,14 +2,11 @@ var moment = require('moment');
 var locs = require('./data/locations.json');
 var gm = require('./gamemanager');
 var guildManager = require('./guildmanager');
+var gameRoom = require('./gameroom');
 
-function Game(host, channel) {
-    if (gm.isInGame(host)) {
-        channel.sendMessage(host.nickMention + ' you are already in another game!');
-        return;
-    }
-
-    this.channel = channel;
+function Game(host) {
+    
+    this.gameRoom = new gameRoom(gm.getNextGameNumber())//Creates game room object, containing room information
     this.players = [host];
     this.host = host;
     this.spy = null;
@@ -18,34 +15,37 @@ function Game(host, channel) {
 
     if (gm.addGame(this)) {
         // success
-        channel.sendMessage('@everyone A new game is starting! Type join to play (max 7 players)');
+        console.log("Adding game host "+this.host+" to role "+this.gameRoom.role );
+        guildManager.addRole(this.gameRoom.role);
+        this.gameRoom.txtChnl.sendMessage('@everyone A new game is starting! Type join to play (max 7 players)');
     }
 }
 
 Game.prototype.addPlayer = function (player) {
     if(this.inProgress) {
-        this.channel.sendMessage('Sorry ' + player.nickMention + ', the game has already started!');
+        this.gameRoom.txtChnl.sendMessage('Sorry ' + player.nickMention + ', the game has already started!');
         return;
     }
     if (this.players.length >= 7) {
-        this.channel.sendMessage('Sorry ' + player.nickMention + ', this game is full!');
+        this.gameRoom.txtChnl.sendMessage('Sorry ' + player.nickMention + ', this game is full!');
         return;
     }
     if (this.players.find(p => p.id === player.id)) {
-        this.channel.sendMessage(player.nickMention + ' you are already in the game');
+        this.gameRoom.txtChnl.sendMessage(player.nickMention + ' you are already in the game');
         return;
     }
     if (gm.isInGame(player)) {
-        this.channel.sendMessage(player.nickMention + ' you are already in another game!');
+        this.gameRoom.txtChnl.sendMessage(player.nickMention + ' you are already in another game!');
         return;
     }
-    this.channel.sendMessage(player.nickMention + ' joined the game');
+    //set player game role
+    this.gameRoom.txtChnl.sendMessage(player.nickMention + ' joined the game');
     this.players.push(player);
 };
 
 Game.prototype.startGame = function () {
     this.inProgress = true;
-    this.channel.sendMessage(this.host.nickMention + ' has started the game!\nInformation will be sent via private message.');
+    this.gameRoom.txtChnl.sendMessage(this.host.nickMention + ' has started the game!\nInformation will be sent via private message.');
     this.spy = this.players[Math.floor(Math.random() * this.players.length)];
 
     for (var i = 0; i < this.players.length; i++) {
@@ -68,7 +68,7 @@ Game.prototype.startGame = function () {
         }
     }
     var starter = this.players[Math.floor(Math.random() * this.players.length)];
-    this.channel.sendMessage(starter.nickMention + ' is first');
+    this.gameRoom.txtChnl.sendMessage(starter.nickMention + ' is first');
 };
 
 Game.getRandomLocation = function () {
@@ -77,7 +77,7 @@ Game.getRandomLocation = function () {
 
 Game.freeChannels = function () {
     var games = gm.getGames();
-    var gameChannels = guildManager.getGameRooms();
+    var gameChannels = guildManager.getGameRooms();//Change to gameroom object
     var frees = gameChannels.filter(function (c) {
         var keep = true;
         games.forEach(function (game) {
