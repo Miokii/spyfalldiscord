@@ -21,7 +21,9 @@ client.Dispatcher.on("GATEWAY_READY", e => {
     if(guild != null){
         guildManager.initialise(guild);
         commands.giveClient(client);
+        
     }
+
 });
 
 client.Dispatcher.on("MESSAGE_CREATE", e => {
@@ -30,5 +32,5 @@ client.Dispatcher.on("MESSAGE_CREATE", e => {
 
 client.Dispatcher.on("GUILD_MEMBER_ADD", e => {
     var channel = e.guild.textChannels.find(c => c.name == "welcome");
-    channel.sendMessage(e.member.mention + ", Welcome to the Spyfall Discord server! If you're new to the game, head over to " + msg.channel.guild.find(c => c.name == "rules" ) + " for more information.");
+    channel.sendMessage(e.member.mention + ", Welcome to the Spyfall Discord server! If you're new to the game, head over to " + client.guild.find(c => c.name == "rules" ) + " for more information.");
 });
