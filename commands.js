@@ -78,14 +78,17 @@ function parseMessage(ctx) {
         }
     }
     if (/^new game\b/i.test(msg)) {
-        var gameChannels = Game.freeChannels();
-        if(gameChannels.length > 0) {
-            var newGame = new Game(ctx.message.author, gameChannels[0]);
-        } else {
-            // no more channels
-            chnl.sendMessage('Sorry, there are no more game channels available!');
+        if (gm.isInGame(ctx.message.author)) {
+            chnl.sendMessage(ctx.message.author.nickMention + ' you are already in another game!');
+        }else{
+            if(gm.roomForOneMore()){
+                var newGame = new Game(ctx.message.author);
+            }else{
+                chnl.sendMessage("Unfortunately there are no more game rooms available right now.");
+            }
         }
     }
+    
     if(/^join$/i.test(msg)) {
         var game = gm.getGameForChannel(chnl);
         if(game) {
