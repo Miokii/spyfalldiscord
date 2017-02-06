@@ -1,3 +1,5 @@
+var guildManager = require("./guildmanager");
+
 var gamesInProgress = [];
 
 function addGame(game) {
@@ -11,7 +13,7 @@ function getGames() {
 }
 
 function getGameForChannel(channel) {
-    var g = gamesInProgress.filter(g => g.channel.id === channel.id);
+    var g = gamesInProgress.filter(g => g.gameRoom.txtChnl.id === channel.id);
     if (g.length === 1) {
         return g[0];
     } else {
@@ -35,10 +37,25 @@ function removeGame(game) {
     }
 }
 
+function roomForOneMore(){
+    return guildManager.maxGames() >= (gamesInProgress.length+1);
+}
+
+function getNextGameNumber(){
+    if(gamesInProgress <= 0){
+        return 0;
+    }else{
+        return gamesInProgress.length +1;
+    }
+    
+}
+
 module.exports = {
     addGame: addGame,
     getGames: getGames,
     getGameForChannel: getGameForChannel,
     isInGame: isInGame,
-    removeGame: removeGame
+    removeGame: removeGame,
+    roomForOneMore : roomForOneMore,
+    getNextGameNumber : getNextGameNumber
 }
