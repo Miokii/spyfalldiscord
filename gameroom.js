@@ -1,6 +1,6 @@
 var guildManager = require('./guildmanager');
 
-function gameRoom(roomNum) {
+function GameRoom(roomNum) {
     if(roomNum > guildManager.maxGames){
         console.log("No more gamerooms available");
         return;
@@ -19,4 +19,4 @@ function gameRoom(roomNum) {
     console.log(this.role + this.voiceChnl + this.txtChnl);
 }
 
-module.exports = gameRoom;
+module.exports = GameRoom;

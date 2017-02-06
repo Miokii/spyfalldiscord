@@ -2,11 +2,11 @@ var moment = require('moment');
 var locs = require('./data/locations.json');
 var gm = require('./gamemanager');
 var guildManager = require('./guildmanager');
-var gameRoom = require('./gameroom');
+var GameRoom = require('./gameroom');
 
 function Game(host) {
     
-    this.gameRoom = new gameRoom(gm.getNextGameNumber())//Creates game room object, containing room information
+    this.gameRoom = new GameRoom(gm.getNextGameNumber())//Creates game room object, containing room information
     this.players = [host];
     this.host = host;
     this.spy = null;
