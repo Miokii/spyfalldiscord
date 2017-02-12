@@ -16,7 +16,7 @@ function Game(host) {
     if (gm.addGame(this)) {
         // success
         console.log("Adding game host " + this.host + " to role " + this.gameRoom.role);
-        guildManager.addRole(this.gameRoom.role);
+        guildManager.addRole(this.host, this.gameRoom.role);
         this.gameRoom.txtChnl.sendMessage('@everyone A new game is starting! Type join to play (max ' + this.maxPlayers + ' players)');
     }
 }
@@ -40,6 +40,7 @@ Game.prototype.addPlayer = function (player) {
     }
     //set player game role
     this.gameRoom.txtChnl.sendMessage(player.nickMention + ' joined the game');
+    guildManager.addRole(player, this.gameRoom.role);
     this.players.push(player);
 };
 
@@ -75,6 +76,14 @@ Game.prototype.startGame = function () {
     var starter = this.players[Math.floor(Math.random() * this.players.length)];
     this.gameRoom.txtChnl.sendMessage(starter.nickMention + ' is first');
 };
+
+Game.prototype.endGame = function () {
+    this.players.forEach(function (p) {
+        guildManager.removeRole(p, this.gameRoom.role);
+    }, this);
+    gm.removeGame(this);
+    this.gameRoom.txtChnl.sendMessage('The game was ended by' + this.host.nickMention + '!');
+}
 
 Game.getRandomLocation = function () {
     return locs[Math.floor(Math.random() * locs.length)];

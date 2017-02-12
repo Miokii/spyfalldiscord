@@ -109,8 +109,7 @@ function parseMessage(ctx) {
         var game = gm.getGameForChannel(chnl);
         if(game) {
             if(game.host.id === ctx.message.author.id) {
-                gm.removeGame(game);
-                chnl.sendMessage('The game was ended by ' + game.host.nickMention + '!');
+                game.endGame();
                 return;
             }
             chnl.sendMessage('Only the host can end the game manually');
