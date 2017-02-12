@@ -5,7 +5,7 @@ var guildManager = require('./guildmanager');
 var GameRoom = require('./gameroom');
 
 function Game(host) {
-    
+    this.maxPlayers = 7;
     this.gameRoom = new GameRoom(gm.getNextGameNumber())//Creates game room object, containing room information
     this.players = [host];
     this.host = host;
@@ -15,18 +15,18 @@ function Game(host) {
 
     if (gm.addGame(this)) {
         // success
-        console.log("Adding game host "+this.host+" to role "+this.gameRoom.role );
+        console.log("Adding game host " + this.host + " to role " + this.gameRoom.role);
         guildManager.addRole(this.gameRoom.role);
-        this.gameRoom.txtChnl.sendMessage('@everyone A new game is starting! Type join to play (max 7 players)');
+        this.gameRoom.txtChnl.sendMessage('@everyone A new game is starting! Type join to play (max ' + this.maxPlayers + ' players)');
     }
 }
 
 Game.prototype.addPlayer = function (player) {
-    if(this.inProgress) {
+    if (this.inProgress) {
         this.gameRoom.txtChnl.sendMessage('Sorry ' + player.nickMention + ', the game has already started!');
         return;
     }
-    if (this.players.length >= 7) {
+    if (this.players.length >= this.maxPlayers) {
         this.gameRoom.txtChnl.sendMessage('Sorry ' + player.nickMention + ', this game is full!');
         return;
     }
@@ -53,7 +53,7 @@ Game.prototype.startGame = function () {
             this.players[i].openDM().then(function (dm) {
                 dm.sendMessage('You are the spy!');
                 var locRef = "Location Reference:";
-                for(var x = 0; x < locs.length; x++){
+                for (var x = 0; x < locs.length; x++) {
                     locRef += '\n' + locs[x];
                 }
                 dm.sendMessage(locRef);
